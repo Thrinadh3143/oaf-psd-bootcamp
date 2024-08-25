@@ -66,8 +66,22 @@ class ApiWeatherService(AbstractWeatherService):
             dates=daily_data["date"]
         )
 
-# SQLite3 Database Operations
-class WeatherDatabase:
+# Abstract Database Class
+class AbstractWeatherDatabase(ABC):
+    @abstractmethod
+    def insert_data(self, df: pd.DataFrame):
+        pass
+
+    @abstractmethod
+    def fetch_data(self) -> pd.DataFrame:
+        pass
+
+    @abstractmethod
+    def close(self):
+        pass
+
+# SQLite3 Database Implementation
+class WeatherDatabase(AbstractWeatherDatabase):
     def __init__(self, db_name='weather_data_storage.db'):
         self.conn = sqlite3.connect(db_name)
         self.create_table()
@@ -85,7 +99,6 @@ class WeatherDatabase:
 
     def insert_data(self, df: pd.DataFrame):
         cursor = self.conn.cursor()
-        # Convert the Date column to string format before inserting
         df['Date'] = df['Date'].astype(str)
         for _, row in df.iterrows():
             cursor.execute('''
@@ -94,17 +107,31 @@ class WeatherDatabase:
             ''', (row['Date'], row['Min Temperature'], row['Max Temperature']))
         self.conn.commit()
 
-    def fetch_data(self):
+    def fetch_data(self) -> pd.DataFrame:
         df = pd.read_sql_query("SELECT * FROM DailyTemperature", self.conn)
         return df
 
     def close(self):
         self.conn.close()
 
+# Factory Class for Weather Services
+class WeatherServiceFactory:
+    @staticmethod
+    def create_service(service_type: str, api_url: str = None) -> AbstractWeatherService:
+        if service_type == 'api':
+            return ApiWeatherService(api_url)
+        elif service_type == 'mock':
+            return MockWeatherService()  # Assuming a MockWeatherService is implemented
+        else:
+            raise ValueError(f"Unknown service type: {service_type}")
+
 # Main execution
 if __name__ == "__main__":
     api_url = "https://api.open-meteo.com/v1/forecast"
-    weather_service = ApiWeatherService(api_url)
+    
+    # Use the factory to create the appropriate service
+    weather_service = WeatherServiceFactory.create_service('api', api_url)
+    
     daily_temperature = weather_service.fetch_daily_temperature(latitude=52.52, longitude=13.41)
     
     # Convert data to DataFrame
