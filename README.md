@@ -18,6 +18,15 @@ Features
 	•	Histogram of temperature distribution.
 	•	Scatter Plot of minimum vs. maximum temperatures.
 	•	Box Plot and Violin Plot for temperature distributions.
+ What I Learned
+
+	•	Python Programming: Enhanced my skills in Python programming, particularly in working with APIs, data processing, and visualization.
+	•	Data Management: Learned how to efficiently store and retrieve data using SQLite3, and how to manage database connections.
+	•	Data Visualization: Gained experience in creating various types of plots using Matplotlib and Seaborn to interpret weather data.
+	•	Software Design: Improved understanding of software design principles, including abstraction and interface design with the use of abstract classes and factory patterns.
+	•	Error Handling and Robustness: Implemented retry mechanisms and caching to handle API requests more robustly.
+	•	Git & GitHub: Learned how to use Git for version control and GitHub for managing and collaborating on projects. I practiced committing changes, creating branches, and handling pull requests.
+
 
 Setup Instructions
 
